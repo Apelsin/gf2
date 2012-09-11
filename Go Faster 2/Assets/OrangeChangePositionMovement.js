@@ -1,3 +1,5 @@
+//This was an attempt to move the subject without using Unity's built-in physics. It worked, sort-of. -Gavin
+
 var speed = 800;
 var eulerAngleVelocity : Vector3 = Vector3 (0, 100, 0);
 
