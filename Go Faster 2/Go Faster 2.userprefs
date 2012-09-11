@@ -1,0 +1,14 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/OrangeMovement.js">
+    <Files>
+      <File FileName="Assets/OrangeMovement.js" Line="3" Column="13" />
+      <File FileName="Assets/OrangeChangePositionMovement.js" Line="11" Column="64" />
+      <File FileName="Assets/NormalToGround.cs" Line="22" Column="2" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
