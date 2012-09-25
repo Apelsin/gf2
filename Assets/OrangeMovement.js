@@ -31,7 +31,7 @@ function FixedUpdate () {
     var deltaRotation : Quaternion = Quaternion.Euler(eulerAngleVelocity * Time.deltaTime * Input.GetAxis("Horizontal")); 
     rigidbody.rotation *= deltaRotation;
     // This assumes a and b are unit vectors
-    var deltaRotationInflection = 1.0 - Mathf.Pow(Vector3.Dot(deltaRotation * Vector3.fwd, Vector3.fwd), 1.0 + turnComp);
+    var deltaRotationDeflection = 1.0 - Mathf.Pow(Vector3.Dot(deltaRotation * Vector3.fwd, Vector3.fwd), 1.0 + turnComp);
 
     var hitA : RaycastHit;
     var hitB : RaycastHit;
@@ -39,37 +39,33 @@ function FixedUpdate () {
     if (hitA.normal != Vector3.zero) {
         //currentUp = hitA.normal;
     }
-    else
-        Debug.Log(hitA.normal);
     
     var targetRotation = transform.rotation;
-    if (rigidbody.velocity.magnitude > minVelOrient) {
-        //targetRotation = Quaternion.LookRotation (rigidbody.velocity, currentUp);
-        if (Physics.Raycast(transform.position + transform.forward, transform.forward - currentUp, hitB, rayLength, 0xFFFFFFFF)) {
-            //Debug.Log("DICKS");
+    if (rigidbody.velocity.magnitude > minVelOrient)
+    {
+        if (Physics.Raycast(transform.position + transform.forward, transform.forward - currentUp, hitB, rayLength, 0xFFFFFFFF))
+        {
             targetRotation = Quaternion.LookRotation(hitB.point - hitA.point, hitA.normal);
-            //Debug.Log(targetRotation);
         }
     }
-    
     
     var euler = targetRotation.eulerAngles;
     euler.y = rigidbody.rotation.eulerAngles.y;
     
+    // Distance between bottom of the vehicle and the ground
     var pulldown = collider.bounds.size.y / 2.0 - hitA.distance;
-    
-    Debug.Log(pulldown);
     
     rigidbody.rotation = Quaternion.Slerp (
         rigidbody.rotation, Quaternion.Euler(euler),
         Time.deltaTime * dampingRate);
+    
     rigidbody.rotation = Quaternion.Slerp(
         rigidbody.rotation,
         Quaternion.Euler(0.0, rigidbody.rotation.eulerAngles.y, 0.0),
         0.01 * (1.0 - G6Curve(pulldown / realignmentDistance)) * dampingRate);
     rigidbody.AddRelativeForce (velocityDamping * rigidbody.velocity.x, -10, velocityDamping * rigidbody.velocity.z);
     rigidbody.AddRelativeForce (Vector3.forward * Input.GetAxis("Vertical") * forceMultiplier);
-    rigidbody.AddRelativeForce (rigidbody.velocity * deltaRotationInflection);
+    rigidbody.AddRelativeForce (rigidbody.velocity * deltaRotationDeflection);
     rigidbody.AddForce(Vector3(0.0, pulldown, 0.0), ForceMode.Acceleration);
     
 }
