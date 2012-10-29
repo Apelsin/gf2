@@ -3,6 +3,8 @@ Shader "BadAss3 Shader" {
         _Color ("Main Color", Color) = (1,1,1,1)
         _MainTex ("Base (RGB)", 2D) = "white" {}
         _BumpMap ("Normalmap", 2D) = "bump" {}
+        _ParallaxMap ("Heightmap (A)", 2D) = "black" {}
+        _Parallax ("Height", Range (0.005, 0.08)) = 0.02
         _RimColor ("Rim Color", Color) = (0.2,0.2,0.2,0.0)
         _RimPower ("Rim Width", Range(8.0, 0.5)) = 3.0 
         _Enhance ("Enhance", Range(0.0,5.0)) = 1.0
@@ -22,7 +24,9 @@ Shader "BadAss3 Shader" {
         
         sampler2D _MainTex;
         sampler2D _BumpMap;
+        sampler2D _ParallaxMap;
         fixed4 _Color;
+        float _Parallax;
         
         struct Input
         {
@@ -71,6 +75,10 @@ Shader "BadAss3 Shader" {
         void surf (Input IN, inout SurfaceOutput o)
         { 
             fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
+            half h = tex2D (_ParallaxMap, IN.uv_BumpMap).w;
+            float2 offset = ParallaxOffset (h, _Parallax, IN.viewDir);
+            IN.uv_MainTex += offset;
+            IN.uv_BumpMap += offset;
             o.Albedo = IN.color * c.rgb * 0.5;
             o.Alpha = c.a;
             o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
